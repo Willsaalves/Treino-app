@@ -1,5 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import { mockApi } from "@/demo/mock";
+
+/** Build de demonstração (preview web): tudo simulado no próprio app, sem servidor. */
+export const DEMO = process.env.EXPO_PUBLIC_DEMO === "1";
 
 // ---------------- Configuração do servidor ----------------
 type Config = { url: string; token: string };
@@ -8,6 +12,7 @@ let loaded = false;
 const listeners = new Set<(c: Config) => void>();
 
 export async function loadConfig(): Promise<Config> {
+  if (DEMO) { config = { url: "demo", token: "" }; loaded = true; }
   if (!loaded) {
     const raw = await AsyncStorage.getItem("server-config");
     if (raw) config = JSON.parse(raw);
@@ -40,6 +45,9 @@ export async function api<T = unknown>(
   path: string,
   opts: { method?: string; body?: unknown; form?: FormData; timeoutMs?: number } = {},
 ): Promise<T> {
+  if (DEMO) {
+    try { return (await mockApi(path, opts)) as T; } catch (e) { throw new ApiError((e as Error).message); }
+  }
   const { url, token } = await loadConfig();
   if (!url) throw new ApiError("Configure o endereço do servidor em Ajustes.");
   const ctrl = new AbortController();
@@ -67,6 +75,7 @@ export async function api<T = unknown>(
 }
 
 export function photoSource(filename: string) {
+  if (DEMO) return { uri: filename };
   return { uri: `${config.url}/photos/${filename}`, headers: config.token ? { "x-app-token": config.token } : undefined };
 }
 

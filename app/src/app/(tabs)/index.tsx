@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
-import { addDays, api, isoDate, prettyDate, type LoggedSet, type Workout, type WorkoutItem } from "@/lib/api";
+import { addDays, api, DEMO, isoDate, prettyDate, type LoggedSet, type Workout, type WorkoutItem } from "@/lib/api";
 import { Button, C, Card, ErrorBox, H1, H2, Input, Loading, P, Row, Screen } from "@/components/ui";
 
 export default function TodayScreen() {
@@ -32,6 +32,12 @@ export default function TodayScreen() {
         <Text style={{ color: C.text, fontWeight: "700", fontSize: 16 }}>{prettyDate(date)}</Text>
         <Button title="›" variant="ghost" small onPress={() => setDate(addDays(date, 1))} />
       </Row>
+
+      {DEMO ? (
+        <View style={{ backgroundColor: C.accentSoft, borderRadius: 10, padding: 10 }}>
+          <Text style={{ color: C.text, fontSize: 13 }}>🧪 Modo demonstração: dados de exemplo, nada é salvo. Pode registrar séries à vontade.</Text>
+        </View>
+      ) : null}
 
       {restEnds ? <RestTimer endsAt={restEnds} onDone={() => setRestEnds(null)} /> : null}
 
@@ -90,11 +96,13 @@ function SetRow({ n, item, date, logged, onLogged }: { n: number; item: WorkoutI
   const [busy, setBusy] = useState(false);
 
   const save = async () => {
-    const w = Number(weight.replace(",", ".")), r = Number(reps);
+    // Campo vazio = usa o valor sugerido (placeholder)
+    const w = Number(weight.replace(",", ".")), r = Number(reps || item.suggestion.reps);
     if (!(w >= 0) || !(r > 0)) return;
     setBusy(true);
     try {
       await api("/api/logs", { body: { date, exercise_id: item.exercise_id, set_number: n, weight: w, reps: r } });
+      setReps(String(r));
       onLogged();
     } finally { setBusy(false); }
   };
@@ -105,7 +113,7 @@ function SetRow({ n, item, date, logged, onLogged }: { n: number; item: WorkoutI
       <Input value={weight} onChangeText={setWeight} keyboardType="decimal-pad" placeholder="kg" style={{ width: 80, textAlign: "center" }} />
       <Text style={{ color: C.muted }}>×</Text>
       <Input value={reps} onChangeText={setReps} keyboardType="number-pad"
-        placeholder={prevSet ? `${prevSet.reps}` : `${item.suggestion.reps}`} style={{ width: 64, textAlign: "center" }} />
+        placeholder={`${item.suggestion.reps}`} style={{ width: 64, textAlign: "center" }} />
       <View style={{ flex: 1 }} />
       <Button title={logged ? "✓" : "Feito"} variant={logged ? "success" : "primary"} small disabled={busy} onPress={save} />
     </Row>

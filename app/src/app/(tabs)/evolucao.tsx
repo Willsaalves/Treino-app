@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { api, isoDate, photoSource, type Progress } from "@/lib/api";
@@ -39,8 +39,13 @@ export default function ProgressScreen() {
     if (res.canceled) return;
     const asset = res.assets[0];
     const form = new FormData();
-    // React Native aceita { uri, name, type } como arquivo no FormData
-    form.append("photo", { uri: asset.uri, name: asset.fileName ?? "foto.jpg", type: asset.mimeType ?? "image/jpeg" } as unknown as Blob);
+    if (Platform.OS === "web") {
+      // No navegador o FormData precisa de um Blob de verdade
+      form.append("photo", await (await fetch(asset.uri)).blob(), asset.fileName ?? "foto.jpg");
+    } else {
+      // React Native aceita { uri, name, type } como arquivo no FormData
+      form.append("photo", { uri: asset.uri, name: asset.fileName ?? "foto.jpg", type: asset.mimeType ?? "image/jpeg" } as unknown as Blob);
+    }
     form.append("date", isoDate());
     form.append("pose", pose);
     setUploading(true);

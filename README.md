@@ -108,3 +108,15 @@ $env:REACT_NATIVE_PACKAGER_HOSTNAME = (tailscale ip -4); npx expo start
 | GET/POST/DELETE | `/api/coach[/messages]` | coach (Claude) |
 
 Todas as rotas (menos `/api/health`) exigem o header `x-app-token` quando `APP_TOKEN` está definido.
+
+## Preview web (modo demonstração)
+
+Pra ver o app no navegador sem servidor, com dados de exemplo simulados em memória:
+
+```bash
+cd app
+npm run build:demo                 # export web com EXPO_PUBLIC_DEMO=1
+python3 scripts/web-preview.py     # gera dist-demo/preview.html (arquivo único)
+```
+
+O `preview.html` abre em qualquer hospedagem estática. Pra publicar no Cloudflare Pages: `npx wrangler pages deploy dist-demo --project-name treino-preview`.

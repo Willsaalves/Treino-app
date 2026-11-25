@@ -190,7 +190,7 @@ export const EXERCISES: Ex[] = [
 ];
 
 // Divisão de 5 dias combinada no chat
-const SPLIT: { weekday: number; name: string; items: [string, number, number, number][] }[] = [
+export const SPLIT: { weekday: number; name: string; items: [string, number, number, number][] }[] = [
   { weekday: 1, name: "Costas + bíceps", items: [
     ["puxada-aberta", 4, 8, 12], ["remada-curvada", 3, 8, 10], ["remada-unilateral", 3, 10, 12],
     ["pullover-polia", 3, 12, 15], ["rosca-direta", 3, 8, 12], ["rosca-martelo", 3, 10, 12] ] },
@@ -208,7 +208,7 @@ const SPLIT: { weekday: number; name: string; items: [string, number, number, nu
     ["rosca-scott", 3, 10, 12], ["triceps-frances", 3, 10, 12], ["elevacao-pernas", 3, 12, 15] ] },
 ];
 
-const MEALS: { time: string; name: string; items: string[]; protein_g: number; kcal: number }[] = [
+export const MEALS: { time: string; name: string; items: string[]; protein_g: number; kcal: number }[] = [
   { time: "06:00", name: "Ao acordar", items: ["400–500 ml de água"], protein_g: 0, kcal: 0 },
   { time: "06:30", name: "Pré-treino", items: ["1 banana", "1 dose de whey com água", "Café sem açúcar (opcional)"], protein_g: 24, kcal: 230 },
   { time: "09:00", name: "Café da manhã / pós-treino", items: ["3 ovos", "2 fatias de pão integral", "1 YoPRO", "1 fruta", "Creatina 3–5 g"], protein_g: 45, kcal: 650 },
@@ -216,7 +216,7 @@ const MEALS: { time: string; name: string; items: string[]; protein_g: number; k
   { time: "19:30", name: "Jantar", items: ["180 g de peixe ou frango", "Arroz ou batata", "Legumes", "1 fruta"], protein_g: 45, kcal: 650 },
 ];
 
-const DEFAULT_SETTINGS: Record<string, string> = {
+export const DEFAULT_SETTINGS: Record<string, string> = {
   goal_kcal: "2400",
   goal_protein_g: "155",
   goal_water_ml: "3000",

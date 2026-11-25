@@ -36,3 +36,4 @@ web-build
 web-build/
 yarn-debug.*
 yarn-error.*
+dist-demo/
